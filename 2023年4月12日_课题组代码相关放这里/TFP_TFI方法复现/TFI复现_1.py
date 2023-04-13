@@ -6,14 +6,37 @@ import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
 # 然后，读取data里的.mat文件，提取出脉冲数据和时间戳数据。假设文件名为data.mat，脉冲数据为spike，时间戳数据为time
-# data = sio.loadmat('./data/train/200_part_1_id_0.npz')
+data = sio.loadmat('./data/train/data.mat')
+spike = data['spike']
+time = data['time']
+
+# data = np.load('./data/test/220_part_1_id_0.npz')
+# print(data.files)
 # spike = data['spike']
 # time = data['time']
 
-data = np.load('./data/test/220_part_1_id_0.npz')
-print(data.files)
-spike = data['spike']
-time = data['time']
+# # 获取文件中的所有数组名称
+# names = data.files
+# # 打印数组名称和数组值
+# for name in names:
+#     print(name)
+#     print(data[name])
+# # 选择一个数组进行可视化，例如第一个数组
+# array = data[names[0]]
+# array.shape
+# names
+# i = 0
+# k = 7
+# array = data[names[i]]
+# array.shape
+# # 绘制图像
+# plt.imshow(array[k], cmap='gray')
+# # 设置标题和颜色条
+# plt.title('Image of ' + names[i])
+# plt.colorbar()
+# # 显示图像
+# plt.show()
+
 # 接下来，对脉冲数据进行预处理，去除噪声和异常值，以及根据时间戳对脉冲进行排序。这里我们假设噪声和异常值的判断标准是脉冲数小于等于1或者大于等于10的像素点，可以用numpy的where函数来找出这些像素点，并将其置为0。然后，我们可以用numpy的argsort函数来根据时间戳对脉冲进行排序。
 # 去除噪声和异常值
 noise = np.where((spike <= 1) | (spike >= 10))
