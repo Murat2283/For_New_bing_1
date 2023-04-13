@@ -6,7 +6,7 @@ import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
 # 然后，读取data里的.mat文件，提取出脉冲数据和时间戳数据。假设文件名为data.mat，脉冲数据为spike，时间戳数据为time
-data = sio.loadmat('./data/train/data.mat')
+data = sio.loadmat('./data/train/pulse_camera_data.mat')
 spike = data['spike']
 time = data['time']
 
@@ -56,6 +56,26 @@ cum_isi = np.cumsum(isi, axis=1)
 # 找出每个像素点在最近100毫秒内发生的第一个脉冲的位置
 window = 100  # 时间窗口为100毫秒
 start = np.searchsorted(cum_isi, time_sorted - window, side='right')
+# start = np.searchsorted(np.ravel(cum_isi), time_sorted - window, side='right')
+#__________________________________________________________________
+# cum_isi.shape #(1, 999)
+# start[:, None].shape #(1, 1, 1000)
+# # 使用numpy.squeeze函数在start数组的第二个轴上去掉一个维度
+# start = np.squeeze(start[:, None], axis=1)
+
+# # 现在start的shape为(1, 1000)，与cum_isi的shape仍然不匹配
+# print(start.shape) # (1, 1000)
+
+# # 使用numpy.pad函数在cum_isi数组的第二个轴上填充一个值
+# cum_isi = np.pad(cum_isi, ((0, 0), (0, 1)), constant_values=0)
+
+# # 现在cum_isi的shape为(1, 1000)，与start的shape匹配
+# print(cum_isi.shape) # (1, 1000)
+
+# # 使用np.take_along_axis函数沿着第二个轴从cum_isi数组中取出元素
+# cum_isi_start = np.take_along_axis(cum_isi, start, axis=1)
+
+#__________________________________________________________________
 
 # 提取出这些位置对应的累积ISI
 cum_isi_start = np.take_along_axis(cum_isi, start[:, None], axis=1)
