@@ -43,8 +43,7 @@ def light_intensity(x, y, t):
     if scene == 'outdoor' and target == 'red balloon':
         # simulate a bright and sunny day
         intensity = 200 + torch.randint(-10, 10, (1,), device='cuda')
-        t = torch.tensor(t, dtype=torch.float32, device='cuda') # convert t to a Tensor
-        t = t.clone().detach() # clone and detach t from the computation graph
+        t = t.clone().detach().to(device='cuda') # convert t to a Tensor
         # simulate a red balloon flying from left to right
         cx = t * 0.5 + 50 # the x coordinate of the balloon center
         cy = height / 2 + torch.sin(t * 0.01) * 50 # the y coordinate of the balloon center
