@@ -62,10 +62,11 @@ def light_intensity(x, y, t):
 # create arrays of x, y, and t coordinates on GPU
 x = torch.arange(height, device='cuda').reshape(height, 1, 1)
 y = torch.arange(width, device='cuda').reshape(1, width, 1)
+# t = torch.arange(frames, device='cuda').reshape(1, 1, frames)
 t = torch.arange(frames, device='cuda').reshape(1, 1, frames)
 
-x = x.transpose(0, 1) # swap the first and second dimensions of x
-y = y.transpose(0, 1) # swap the first and second dimensions of y
+# x = x.transpose(0, 1) # swap the first and second dimensions of x
+# y = y.transpose(0, 1) # swap the first and second dimensions of y
 # get the light intensity of all pixels and frames at once
 
 intensity = light_intensity(x, y, t)
@@ -77,7 +78,21 @@ pulse = intensity > threshold
 intensity[pulse] = 0
 
 # record the timestamp of the pulses
+# time[pulse] = t[pulse] / frames # normalize the timestamp to [0, 1]
 time[pulse] = t[pulse] / frames # normalize the timestamp to [0, 1]
+pulse.shape #torch.Size([1, 480, 1])
+t.shape #torch.Size([1, 1, 1000])
+time.shape #torch.Size([480, 480, 1000])
+# # 将t[pulse]和time[pulse]都压缩成一维向量
+# t_pulse = torch.squeeze(t[pulse], dim=0)
+# time_pulse = torch.squeeze(time[pulse], dim=0)
+# # 将t_pulse中的每个元素除以frames，然后赋值给time_pulse
+# time_pulse = t_pulse / frames
+# # 将time_pulse扩展成二维向量，并赋值给time[pulse]
+# time[pulse] = torch.unsqueeze(time_pulse, dim=0)
+
+
+
 
 # accumulate the intensity for the next frame
 intensity += light_intensity(x, y, t + 1)
