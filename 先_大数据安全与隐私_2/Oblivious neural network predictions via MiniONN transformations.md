@@ -66,6 +66,24 @@
 
 
 
+完整的模型在服务器的手里，但是服务器把模型的权重矩阵分成了两半，分别存储在服务器1和服务器2上。客户端无法从服务器1或服务器2上获取完整的模型，只能通过加密的方式与服务器进行交互。
+
+
+
+这个在论文的第三节有说到，具体是这样的：
+
+> We present MiniONN, the first approach for transforming an existing neural network to an oblivious neural network supporting privacy-preserving predictions with reasonable efficiency. Unlike prior work, MiniONN requires no change to how models are trained. To this end, we design oblivious protocols for commonly used operations in neural network prediction models. We show that MiniONN outperforms existing work in terms of response latency and message sizes. We demonstrate the wide applicability of MiniONN by transforming several typical neural network models trained from standard datasets[1](https://eprint.iacr.org/2017/452.pdf)
+
+论文还介绍了MiniONN转换的具体步骤，包括：
+
+- 将每个权重元素分解为两个随机数之和，并将其分别发送给两个服务器。[1](https://eprint.iacr.org/2017/452.pdf) [公式（4）]
+- 将每个激活函数用多项式近似，并将其分解为两个随机多项式之和，并将其分别发送给两个服务器。[1](https://eprint.iacr.org/2017/452.pdf) [公式（5）]
+- [利用同态加密和秘密共享技术来实现加密矩阵乘法和加密函数计算，并保证每个服务器只能看到加密数据。](https://eprint.iacr.org/2017/452.pdf)[1](https://eprint.iacr.org/2017/452.pdf) [公式（6）]
+
+[根据论文](https://dl.acm.org/doi/10.1145/3133956.3134056)[1](https://dl.acm.org/doi/10.1145/3133956.3134056)[2](https://eprint.iacr.org/2017/452.pdf)，服务器和客户端都没有完整的模型信息。服务器只有模型的参数，但是不知道模型的结构和输入输出的形状。客户端只有模型的结构和输入输出的形状，但是不知道模型的参数。这样，双方都不能重建或者窃取对方的信息。论文中第三节（System Model）和第四节（MiniONN）可以回答这个问题。
+
+
+
 
 
 直接交给客户端操作有几个问题：
@@ -295,3 +313,72 @@
     - 支持更多的应用场景：本文考虑了一种简单的应用场景，即客户端向服务端发送单个输入数据，并得到单个输出结果。然而，在实际中，可能存在更复杂的应用场景，如客户端向服务端发送批量输入数据，并得到批量输出结果；或者客户端和服务端之间存在多个中间节点，需要进行多跳通信；或者客户端和服务端之间存在多个竞争者或合作者，需要进行多方计算等。这些应用场景可能会带来更多的挑战和机遇。
 ```
 
+
+
+# MiniONN模型流程图
+
+```mermaid
+graph LR
+A[客户端输入] --> B[加密]
+B --> C[发送给服务器]
+C --> D[服务器端ONN]
+D --> E[返回给客户端]
+E --> F[解密]
+F --> G[客户端输出]
+
+subgraph 客户端
+A
+B
+F
+G
+end
+
+subgraph 服务器端
+D
+end
+
+subgraph 不经意化协议
+C
+E
+end
+
+C -->|不经意化激活函数| D1((ReLU))
+D1 -->|不经意化池化操作| D2((Max Pooling))
+D2 -->|不经意化卷积操作| D3((Convolution))
+D3 -->|不经意化全连接层| D4((Fully Connected))
+D4 -->|不经意化归一化操作| D5((Batch Normalization))
+D5 --> E
+
+style C fill:#f9f,stroke:#333,stroke-width:4px
+style E fill:#f9f,stroke:#333,stroke-width:4px
+```
+
+
+
+
+
+
+
+
+
+好的，我用Markdown语法写了一下那几个公式，如下所示：
+
+- 公式（4）：
+
+Wij=Wij1+Wij2,bi=bi1+bi2
+
+- 公式（5）：
+
+f(x)=f1(x)+f2(x),f1(x)=k=0∑dakxk,f2(x)=k=0∑dbkxk
+
+- 公式（6）：
+
+Server 1: yi1=j=1∑lWij1xj+bi1Server 2: yi2=j=1∑lWij2xj+bi2Client: yi=yi1+yi2Server 1: zi1=f1(yi)Server 2: zi2=f2(yi)Client: zi=zi1+zi2
+
+希望这能对您有所帮助。👍
+
+
+
+[论文阅读笔记：Oblivious Network Predictions via MiniONN transformations - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/467292785)
+
+[Oblivious Neural Network Prediction via MiniONN transformations - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/363977904)
