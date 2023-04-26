@@ -47,3 +47,10 @@ Copy
 需要注意的是，由于时间序列数据具有时间上的相关性，因此在进行Transformer Encoder的处理时需要按照时间顺序进行。另外，全连接层的输出可以是单个值，也可以是多个值，具体取决于预测目标的类型。
 ```
 
+[diffusers库主要是用于生成图像、音频和分子的三维结构的扩散模型，它不是专门针对股票数据的库。但是，如果你想用transformer的decoder、卷积和位置编码来分析股票数据，你可以参考一些其他的库或论文，比如](https://zhuanlan.zhihu.com/p/362484098)[1](https://zhuanlan.zhihu.com/p/362484098)[2](https://zhuanlan.zhihu.com/p/135873679)[3](https://zhuanlan.zhihu.com/p/352898810)：
+
+- [CPVT](https://zhuanlan.zhihu.com/p/362484098)[1](https://zhuanlan.zhihu.com/p/362484098)：一个卷积就可以隐式编码位置信息的模型，它使用了multi-head self-attention层和全连接前馈网络，可以处理变长的序列。
+- [Transformer](https://zhuanlan.zhihu.com/p/135873679)[2](https://zhuanlan.zhihu.com/p/135873679)：一个基于注意力机制的序列模型，它使用了scaled dot-product attention和multi-head attention来编码位置信息，可以处理文本和图像序列。
+- Transformer-XL[3](https://zhuanlan.zhihu.com/p/352898810)：一个超越固定长度上下文的注意力语言模型，它使用了相对位置编码和分段循环机制来处理长序列。
+
+这些库或论文可能会对你有所启发，但是你可能需要根据你的具体需求来调整或改进它们。
