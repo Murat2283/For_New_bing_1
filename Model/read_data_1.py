@@ -19,12 +19,13 @@ def get_stock_data(df, data, x, y):
     df_before: pandas.DataFrame，查询日期前 x 天的股票数据。
     df_after: pandas.DataFrame，查询日期后 y 天的股票数据。
     """
-
+    x = x+1
+    y = y+1
     # 将索引设置为日期和s_index
-    df.set_index(['Date', 's_index'], inplace=True)
+    df_ = df.set_index(['Date', 's_index'])
 
     # 统计指定日期内股票信息的数量
-    df_data = df.loc[data]
+    df_data = df_.loc[data]
     num_stocks = len(df_data)
 
     # 将日期字符串转换为日期类型
@@ -36,11 +37,11 @@ def get_stock_data(df, data, x, y):
 
     # 筛选前x天的数据
     before_dates = pd.date_range(start=start_date, end=date).strftime('%Y-%m-%d').tolist()
-    df_before = df[df.index.get_level_values('Date').isin(before_dates)]
+    df_before = df_[df_.index.get_level_values('Date').isin(before_dates)]
 
     # 筛选后y天的数据
     after_dates = pd.date_range(start=date, end=end_date).strftime('%Y-%m-%d').tolist()
-    df_after = df[df.index.get_level_values('Date').isin(after_dates)]
+    df_after = df_[df_.index.get_level_values('Date').isin(after_dates)]
 
     # 返回结果
     return num_stocks, df_before, df_after
@@ -52,8 +53,12 @@ num_stocks, df_before, df_after = get_stock_data(df,'2023-04-21', 7, 7)
 print(f"指定日期内股票信息的数量为：{num_stocks}")
 print("查询日期前 7 天的股票数据：")
 print(df_before)
+df_before.shape
+df_after.shape
 print("查询日期后 7 天的股票数据：")
 print(df_after)
+
+#14  X 20 X 7 = 120X14
 
 
 
