@@ -28,3 +28,8 @@ ViT(Vision Transformer)模型是Google研究团队提出的一种新型图像分
 这是ViT模型的简单实现,主要包括:1. 定义Transformer Encoder Layer和Encoder
 \2. 定义ViT模型,包含Patch Embedding,Cls Token,添加位置编码,使用Encoder,以及分类器
 \3. forward方法实现整个模型的前向计算使用这个模型,可以对图像数据集进行训练和评估,实现图像分类任务。完整的训练和评估代码会比较长,如果需要可以另外提供。希望这个实现可以起到抛砖引玉的作用,有任何问题都请提出,我很乐意讨论和改进这个实现。
+
+
+
+
+
